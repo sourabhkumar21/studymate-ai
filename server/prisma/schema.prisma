@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id // Clerk User ID
+  email     String   @unique
+  name      String
+  image     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relations
+  roadmaps  Roadmap[]
+}
+
+// ------------------------------------------------------
+// NEW MODELS: StudyMate AI (Replaces the Project model)
+// ------------------------------------------------------
+
+// The overarching exam preparation plan
+model Roadmap {
+  id        String      @id @default(uuid())
+  title     String      // e.g., "Operating Systems End-Sem"
+  examDate  DateTime
+  syllabusText String
+  isPublic     Boolean  @default(false) 
+  likeCount    Int         @default(0)
+  userId    String  // The Clerk User ID
+  
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  // Relations
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tasks     StudyTask[]
+
+  likes     Like[]
+  comments  Comment[]
+}
+
+// The daily extracted topics
+model StudyTask {
+  id              String         @id @default(uuid())
+  topic           String         // e.g., "CPU Scheduling"
+  dayNumber       Int            // e.g., 1 (for Day 1)
+  confidenceLevel ConfidenceTier @default(WEAK)
+  isCompleted     Boolean        @default(false)
+  revisionCount   Int            @default(0)    // ✨ OUR NEW PRODUCT FEATURE
+  roadmapId       String
+  
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  // Relations
+  roadmap         Roadmap        @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+}
+
+// ==========================================
+// 🧠 THE GLOBAL AI CACHE (SCENARIOS)
+// ==========================================
+model CachedChallenge {
+  id        String   @id @default(uuid())
+  
+  // We make this @unique so we never generate the exact same scenario twice.
+  // This will store our "slugified" string (e.g., "mutexlocks").
+  topic     String   @unique 
+  
+  // PostgreSQL handles JSON beautifully. We will store the entire 
+  // 5-part AI response (Scenario, Problem, Challenge, Solution, Bonus) right here!
+  payload   Json     
+  
+  createdAt DateTime @default(now())
+}
+
+// ==========================================
+// 💬 THE SOCIAL ENGINE (Community Features)
+// ==========================================
+
+model Like {
+  id        String   @id @default(uuid())
+  userId    String   // The Clerk User ID of the person who clicked 'Like'
+  roadmapId String
+  roadmap   Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+
+  // ✨ This is crucial: It prevents a single user from liking the same roadmap 50 times!
+  @@unique([roadmapId, userId]) 
+}
+
+model Comment {
+  id          String   @id @default(uuid())
+  text        String   @db.Text
+  authorName  String   // We save the user's name so we don't have to query Clerk every time
+  userId      String   // The Clerk User ID
+  roadmapId   String
+  roadmap     Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+}
+
+// Our custom confidence tracker enum
+enum ConfidenceTier {
+  WEAK
+  REVIEW
+  MASTERED
+}

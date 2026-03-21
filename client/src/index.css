@@ -1,0 +1,21 @@
+@import "tailwindcss";
+@import "./styles/theme.css";
+
+/* Global layout */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--text-primary);
+  
+  /* Pulling your freshly cleaned, non-purple gradient from theme.css */
+  background: var(--gradient-main);
+  
+  /* ✨ Pro-tip: This keeps the background fixed in place while scrolling */
+  background-attachment: fixed; 
+}

@@ -1,0 +1,47 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+"scripts": {
+    "start": "node dist/server.js",
+    "build": "npx prisma generate && tsc",
+    "server": "nodemon --exec tsx server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@clerk/express": "^1.7.65",
+    "@google/genai": "^1.42.0",
+    "@google/generative-ai": "^0.24.1",
+    "@prisma/adapter-pg": "^7.3.0",
+    "@prisma/client": "^6.19.2",
+    "@sentry/node": "^10.36.0",
+    "axios": "^1.13.5",
+    "cloudinary": "^2.9.0",
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.3.1",
+    "multer": "^2.0.2",
+    "pg": "^8.17.2",
+    "replicate": "^1.4.0"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.6",
+    "@types/multer": "^2.0.0",
+    "@types/node": "^25.0.10",
+    "@types/pg": "^8.16.0",
+    "nodemon": "^3.1.14",
+    "prisma": "^6.19.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
+}
