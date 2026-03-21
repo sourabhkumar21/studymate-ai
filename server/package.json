@@ -6,7 +6,7 @@
   "type": "module",
 "scripts": {
     "start": "node dist/server.js",
-    "build": "npx prisma generate && tsc",
+    "build": "npx prisma generate && tsc && cp -r configs dist/configs",
     "server": "nodemon --exec tsx server.ts"
   },
   "keywords": [],
