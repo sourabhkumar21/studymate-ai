@@ -5,10 +5,10 @@
   "main": "index.js",
   "type": "module",
 "scripts": {
-    "start": "node dist/server.js",
-    "build": "npx prisma generate && tsc && cp -r configs dist/configs",
-    "server": "nodemon --exec tsx server.ts"
-  },
+  "start": "node dist/server.js",
+  "build": "npx prisma generate && tsc",
+  "server": "nodemon --exec tsx server.ts"
+},
   "keywords": [],
   "author": "",
   "license": "ISC",

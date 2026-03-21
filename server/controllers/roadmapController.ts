@@ -4,6 +4,7 @@ import { prisma } from "../configs/prisma.js";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { getAuth } from '@clerk/express';
 
+
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
 
 // ==========================================
@@ -142,7 +143,8 @@ export const recalibrateRoadmap = async (req: Request, res: Response): Promise<a
 
     const daysRemaining = Math.max(1, Math.ceil((new Date(roadmap.examDate).getTime() - Date.now()) / (1000 * 60 * 60 * 24)));
 
-    const queries = roadmap.tasks.map((task, index) => 
+    // ✨ ADDED TYPES HERE: (task: any, index: number)
+    const queries = roadmap.tasks.map((task: any, index: number) => 
       prisma.studyTask.update({
         where: { id: task.id },
         data: { dayNumber: (index % daysRemaining) + 1 }
@@ -276,8 +278,9 @@ export const cloneRoadmap = async (req: Request, res: Response): Promise<any> =>
         examDate: original.examDate,
         syllabusText: original.syllabusText,
         isPublic: false, 
+        // ✨ ADDED TYPE HERE: (task: any)
         tasks: {
-          create: original.tasks.map(task => ({
+          create: original.tasks.map((task: any) => ({
             topic: task.topic,
             dayNumber: task.dayNumber,
             confidenceLevel: "WEAK", 
@@ -415,9 +418,11 @@ export const globalChatWithBuddy = async (req: Request, res: Response): Promise<
     // 2. Summarize the context
     let contextSummary = "No active study plans yet.";
     if (allRoadmaps.length > 0) {
-      contextSummary = allRoadmaps.map(rm => {
+      // ✨ ADDED TYPE HERE: (rm: any)
+      contextSummary = allRoadmaps.map((rm: any) => {
         const total = rm.tasks.length;
-        const done = rm.tasks.filter(t => t.isCompleted).length;
+        // ✨ ADDED TYPE HERE: (t: any)
+        const done = rm.tasks.filter((t: any) => t.isCompleted).length;
         const percent = total > 0 ? Math.round((done / total) * 100) : 0;
         return `- ${rm.title} (Exam: ${new Date(rm.examDate).toLocaleDateString()}): ${percent}% complete.`;
       }).join("\n");

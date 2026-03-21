@@ -25,7 +25,7 @@ async function main() {
       examDate: new Date("2026-05-15"),
       syllabusText: "Arrays, LinkedLists, Trees, Graphs, DP",
       isPublic: true,
-      likes: 342,
+      likeCount: 342,
       tasks: {
         create: [
           { topic: "Arrays, Strings, & Two Pointers", dayNumber: 1 },
@@ -44,7 +44,7 @@ async function main() {
       examDate: new Date("2026-04-20"),
       syllabusText: "Processes, Threads, Memory Management",
       isPublic: true,
-      likes: 189,
+      likeCount: 342,
       tasks: {
         create: [
           { topic: "Process Management & Scheduling", dayNumber: 1 },
