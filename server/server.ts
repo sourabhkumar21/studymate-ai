@@ -11,41 +11,35 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 /* ---------------- CORS ---------------- */
-const allowedOrigins = [
-  "http://localhost:5173",
-  process.env.CLIENT_URL
-];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        "http://localhost:5173",
-        process.env.CLIENT_URL
-      ];
 
-      // allow requests without origin (like Postman / mobile / preflight)
-      if (!origin) return callback(null, true);
+app.use(cors({
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      process.env.CLIENT_URL
+    ];
 
-      // normalize origin (remove trailing slash)
-      const normalizedOrigin = origin.replace(/\/$/, "");
+    if (!origin) return callback(null, true);
 
-      const isAllowed = allowedOrigins.some(
-        (o) => o && normalizedOrigin === o.replace(/\/$/, "")
-      );
+    const normalizedOrigin = origin.replace(/\/$/, "");
 
-      if (isAllowed) {
-        callback(null, true);
-      } else {
-        console.log("❌ Blocked by CORS:", origin);
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+    const isAllowed = allowedOrigins.some(
+      (o) => o && normalizedOrigin === o.replace(/\/$/, "")
+    );
 
-app.options('*', cors());
+    if (isAllowed) {
+      callback(null, true);
+    } else {
+      console.log("❌ Blocked by CORS:", origin);
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+}));
+
+
 /* ---------------- Clerk middleware ---------------- */
 app.use(clerkMiddleware());
 
