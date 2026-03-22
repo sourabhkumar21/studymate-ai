@@ -18,19 +18,34 @@ const allowedOrigins = [
 
 app.use(
   cors({
-    origin: function (origin, callback) {
-      // allow requests with no origin (mobile apps, curl, etc.)
+    origin: (origin, callback) => {
+      const allowedOrigins = [
+        "http://localhost:5173",
+        process.env.CLIENT_URL
+      ];
+
+      // allow requests without origin (like Postman / mobile / preflight)
       if (!origin) return callback(null, true);
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
+      // normalize origin (remove trailing slash)
+      const normalizedOrigin = origin.replace(/\/$/, "");
+
+      const isAllowed = allowedOrigins.some(
+        (o) => o && normalizedOrigin === o.replace(/\/$/, "")
+      );
+
+      if (isAllowed) {
+        callback(null, true);
       } else {
-        return callback(new Error("Not allowed by CORS"));
+        console.log("❌ Blocked by CORS:", origin);
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
   })
 );
+
+app.options('*', cors());
 /* ---------------- Clerk middleware ---------------- */
 app.use(clerkMiddleware());
 
