@@ -11,16 +11,26 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 /* ---------------- CORS ---------------- */
+const allowedOrigins = [
+  "http://localhost:5173",
+  process.env.CLIENT_URL
+];
+
 app.use(
   cors({
-    origin: [
-  "http://localhost:5173", // local frontend
-  "https://studymate-ai.vercel.app" // your deployed frontend (update later if needed)
-],
+    origin: function (origin, callback) {
+      // allow requests with no origin (mobile apps, curl, etc.)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      } else {
+        return callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
-
 /* ---------------- Clerk middleware ---------------- */
 app.use(clerkMiddleware());
 
