@@ -13,7 +13,10 @@ const PORT = process.env.PORT || 5000;
 /* ---------------- CORS ---------------- */
 app.use(
   cors({
-    origin: "*",
+    origin: [
+  "http://localhost:5173", // local frontend
+  "https://studymate-ai.vercel.app" // your deployed frontend (update later if needed)
+],
     credentials: true,
   })
 );
