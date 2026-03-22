@@ -50,8 +50,8 @@ export default function ChatCompanion({ roadmapId }: { roadmapId?: string }) {
       
       // ✨ CHANGE 3: Switch API endpoints based on which mode we are in!
       const endpoint = roadmapId 
-        ? `${import.meta.env.VITE_API_URL}/api/roadmaps/public/roadmaps/${roadmapId}/chat` 
-        : `${import.meta.env.VITE_API_URL}/api/roadmaps/public/roadmaps/global-chat`;
+  ? `${import.meta.env.VITE_API_URL}/api/roadmaps/${roadmapId}/chat`
+  : `${import.meta.env.VITE_API_URL}/api/roadmaps/global-chat`;
 
       const response = await fetch(endpoint, {
         method: "POST",

@@ -55,7 +55,7 @@ export default function Community() {
       }));
 
       // Send to backend
-      await fetch(`${import.meta.env.VITE_API_URL}/roadmaps/${roadmapId}/like`, {
+      await fetch(`${import.meta.env.VITE_API_URL}/api/roadmaps/${roadmapId}/like`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -114,14 +114,14 @@ export default function Community() {
     setCloningId(roadmapId);
     try {
       const token = await getToken();
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/roadmaps/${roadmapId}/clone`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/roadmaps/${roadmapId}/clone`, {
         method: "POST",
         headers: { Authorization: `Bearer ${token}` }
       });
 
       if (response.ok) {
-        const newRoadmap = await response.json();
-        navigate(`/dashboard/${newRoadmap.id}`);
+        const data = await response.json();
+      navigate(`/roadmap/${data.roadmap.id}`);
       }
     } catch (error) {
       console.error("Cloning failed", error);
